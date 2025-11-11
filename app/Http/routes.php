@@ -24,3 +24,4 @@ Route::get('api/test', function () {
 // Ruta para obtener pozos
 Route::get('api/pozos', 'PozoController@obtenerPozos');
 Route::get('api/pozos/todos', 'TodosLosPozosController@obtenerTodosLosPozos');
+Route::get('api/pozos/reporte', 'GenerarReporteController@generarReporte');
