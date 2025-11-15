@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -24,4 +26,7 @@ Route::get('api/test', function () {
 // Ruta para obtener pozos
 Route::get('api/pozos', 'PozoController@obtenerPozos');
 Route::get('api/pozos/todos', 'TodosLosPozosController@obtenerTodosLosPozos');
+
+// Rutas para reportes
 Route::get('api/pozos/reporte', 'GenerarReporteController@generarReporte');
+Route::get('api/pozos/reporte/mensual', 'GenerarReporteMensual@generarReporteMensual');
