@@ -46,13 +46,13 @@ return [
 
     'connections' => [
 
-        'sqlite' => [
+        'sqlite'          => [
             'driver'   => 'sqlite',
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix'   => '',
         ],
 
-        'mysql'  => [
+        'mysql'           => [
             'driver'    => 'mysql',
             'host'      => env('DB_HOST', 'localhost'),
             'port'      => env('DB_PORT', '3306'),
@@ -66,7 +66,7 @@ return [
             'engine'    => null,
         ],
 
-        'pgsql'  => [
+        'pgsql'           => [
             'driver'   => 'pgsql',
             'host'     => env('DB_HOST', 'localhost'),
             'port'     => env('DB_PORT', '5432'),
@@ -78,7 +78,7 @@ return [
             'schema'   => 'public',
         ],
 
-        'sqlsrv' => [
+        'sqlsrv'          => [
             'driver'   => 'sqlsrv',
             'host'     => env('DB_HOST', 'localhost'),
             'port'     => env('DB_PORT', '1433'),
@@ -89,33 +89,45 @@ return [
             'prefix'   => '',
         ],
 
-        'DB1'    => [
+        'bd_MTC_PozaRica' => [
             'driver'   => 'sqlsrv',
-            'host'     => env('DB_HOST', 'localhost'),
-            'port'     => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE', ''),
-            'username' => env('DB_USERNAME', ''),
-            'password' => env('DB_PASSWORD', ''),
+            'host'     => env('DB1_HOST', 'localhost'),
+            'port'     => env('DB1_PORT', '1433'),
+            'database' => env('DB1_DATABASE', ''),
+            'username' => env('DB1_USERNAME', ''),
+            'password' => env('DB1_PASSWORD', ''),
             'charset'  => 'utf8',
             'prefix'   => '',
         ],
-        'DB2'    => [
+
+        'DB2'             => [
             'driver'   => 'sqlsrv',
-            'host'     => env('DB_HOST', 'localhost'),
-            'port'     => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE', ''),
-            'username' => env('DB_USERNAME', ''),
-            'password' => env('DB_PASSWORD', ''),
+            'host'     => env('DB2_HOST', 'localhost'),
+            'port'     => env('DB2_PORT', '1433'),
+            'database' => env('DB2_DATABASE', ''),
+            'username' => env('DB2_USERNAME', ''),
+            'password' => env('DB2_PASSWORD', ''),
             'charset'  => 'utf8',
             'prefix'   => '',
         ],
-        'DB3'    => [
+        'DB3'             => [
             'driver'   => 'sqlsrv',
-            'host'     => env('DB_HOST', 'localhost'),
-            'port'     => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE', ''),
-            'username' => env('DB_USERNAME', ''),
-            'password' => env('DB_PASSWORD', ''),
+            'host'     => env('DB3_HOST', 'localhost'),
+            'port'     => env('DB3_PORT', '1433'),
+            'database' => env('DB3_DATABASE', ''),
+            'username' => env('DB3_USERNAME', ''),
+            'password' => env('DB3_PASSWORD', ''),
+            'charset'  => 'utf8',
+            'prefix'   => '',
+        ],
+
+        'DB4'             => [
+            'driver'   => 'sqlsrv',
+            'host'     => env('DB4_HOST', 'localhost'),
+            'port'     => env('DB4_PORT', '1433'),
+            'database' => env('DB4_DATABASE', ''),
+            'username' => env('DB4_USERNAME', ''),
+            'password' => env('DB4_PASSWORD', ''),
             'charset'  => 'utf8',
             'prefix'   => '',
         ],
