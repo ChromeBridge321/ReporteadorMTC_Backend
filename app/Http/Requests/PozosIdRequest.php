@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Requests;
 
-use App\Http\Requests\Request;
+use Illuminate\Foundation\Http\FormRequest;
 
-class PozosIdRequest extends Request
+class PozosIdRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,10 +23,10 @@ class PozosIdRequest extends Request
     public function rules()
     {
         return [
-            'Pozos'    => 'required|array|min:1',
+            'Pozos'    => 'sometimes|array|min:1',
             'Pozos.*'  => 'integer',
-            'Fecha'    => 'required|date',
-            'Conexion' => 'required|string',
+            'Fecha'    => 'sometimes|date',
+            'Conexion' => 'sometimes|string',
         ];
     }
 }

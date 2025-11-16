@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Request;
+use App\Http\Requests\PozosIdRequest;
 use App\Services\DatabaseConnectionService;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class PozoController extends Controller
 {
@@ -19,7 +19,7 @@ class PozoController extends Controller
     {
         $this->dbConnectionService = $dbConnectionService;
     }
-    public function obtenerPozos(Request $request)
+    public function obtenerPozos(PozosIdRequest $request)
     {
 
         $nombreConexion = $request->input('Conexion');
@@ -34,7 +34,8 @@ class PozoController extends Controller
         $conexion = $this->dbConnectionService->obtenerConexion($nombreConexion);
         $sql      = $this->construirConsulta($conexion);
         try {
-            return $sql;
+            $pozos = DB::connection($conexion)->select($sql);
+            return response()->json($pozos, 200);
 
         } catch (\Exception $e) {
             // Manejar errores y retornar respuesta de error

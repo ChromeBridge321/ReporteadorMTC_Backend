@@ -17,16 +17,7 @@ use Illuminate\Support\Facades\Route;
 | API Routes
 |--------------------------------------------------------------------------
 */
-// Ruta de prueba
-Route::get('api/test', function () {
-    return response()->json(['status' => 'API is working!', 'timestamp' => date('Y-m-d H:i:s')]);
-});
-
 // Ruta para obtener pozos
 Route::get('api/pozos', 'PozoController@obtenerPozos');
-Route::get('api/pozos/todos', 'TodosLosPozosController@obtenerTodosLosPozos');
-
-// Rutas para reportes
-Route::get('api/pozos/reporte', 'GenerarReporteController@generarReporte');
-Route::get('api/pozos/reporte/prueba', 'GenerarReporteController@generarReporteConexion');
+Route::get('api/pozos/reporte', 'GenerarReporteController@generarReporteConexion');
 Route::get('api/pozos/reporte/mensual', 'GenerarReporteMensual@generarReporteMensual');

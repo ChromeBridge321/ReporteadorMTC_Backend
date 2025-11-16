@@ -5,11 +5,11 @@ class DatabaseConnectionService
 {
     private const CONEXIONES_PERMITIDAS = [
         'bd_MTC_PozaRica' => 'bd_MTC_PozaRica',
-        'DB1'             => 'DB1',
-        'DB2'             => 'DB2',
-        'DB3'             => 'DB3',
+        'DB2'             => 'bd_MTC_PozaRica',
+        'DB3'             => 'bd_MTC_PozaRica',
+        'DB4'             => 'bd_MTC_PozaRica',
     ]; // nombre amigable => nombre de conexión en config/database.php debe ser igual al nombre de la
-       // base de datos definida en el archivo .env
+       // base de datos definida en el archivo .env a ser posible 
 
     public function esConexionValida(string $nombreConexion): bool
     {
