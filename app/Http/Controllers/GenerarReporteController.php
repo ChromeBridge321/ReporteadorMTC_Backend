@@ -78,20 +78,20 @@ class GenerarReporteController extends Controller
             GROUP BY DATEPART(HOUR, VH.Fecha), IP.NombrePozo
         )
         SELECT
-            ISNULL(P.Pozo, 'Sin Nombre') AS Pozo,
+            ISNULL(P.Pozo, 'Sin Datos') AS Pozo,
             H.Hora,
             FORMAT(H.Hora, '00') + ':00' AS Hora_Formato,
-            ROUND(ISNULL(P.PresionTP, 0), 1) AS [Presión TP],
-            ROUND(ISNULL(P.PresionTR, 0), 1) AS [Presión TR],
+            ROUND(ISNULL(P.PresionTP, 0), 1) AS [Presion_TP],
+            ROUND(ISNULL(P.PresionTR, 0), 1) AS [Presion_TR],
             ROUND(ISNULL(P.LDD, 0), 1) AS [LDD],
-            ROUND(ISNULL(P.TempPozo, 0), 1) AS [Temperatura Pozo],
-            ROUND(ISNULL(P.TempLE, 0), 1) AS [Temp LE],
-            ROUND(ISNULL(P.TempDesc, 0), 1) AS [Temp. Descarga],
-            ROUND(ISNULL(P.PresionSuccion, 0), 1) AS [Presión Succión],
-            ROUND(ISNULL(P.PresionEstDesc, 0), 1) AS [Presión Estática Descarga],
+            ROUND(ISNULL(P.TempPozo, 0), 1) AS [Temperatura_Pozo],
+            ROUND(ISNULL(P.TempLE, 0), 1) AS [Temp_LE],
+            ROUND(ISNULL(P.TempDesc, 0), 1) AS [Temp_Descarga],
+            ROUND(ISNULL(P.PresionSuccion, 0), 1) AS [Presion_Succion],
+            ROUND(ISNULL(P.PresionEstDesc, 0), 1) AS [Presion_Estatica_Descarga],
             ROUND(ISNULL(P.Velocidad, 0), 1) AS [Velocidad],
-            ROUND(ISNULL(P.TempDescarga, 0), 1) AS [Temperatura Descarga],
-            ROUND(ISNULL(P.TempSuccion, 0), 1) AS [Temperatura Succión]
+            ROUND(ISNULL(P.TempDescarga, 0), 1) AS [Temperatura_Descarga],
+            ROUND(ISNULL(P.TempSuccion, 0), 1) AS [Temperatura_Succion]
         FROM Horas H
         LEFT JOIN Promedios P ON H.Hora = P.Hora
         ORDER BY H.Hora
