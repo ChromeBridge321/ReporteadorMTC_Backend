@@ -40,7 +40,16 @@ class GenerarReporteMensual extends Controller
         foreach ($pozosIDs as $pozoId) {
             $consulta = DB::connection($conexion)->select($sql, [$pozoId]);
             if (! empty($consulta)) {
-                $ReporteMensual[$consulta[0]->Pozo] = $consulta;
+                // Convertir los resultados a array de objetos simples
+                $registros = array_map(function ($registro) {
+                    return (array) $registro;
+                }, $consulta);
+
+                // Agregar al array en el nuevo formato
+                $ReporteMensual[] = [
+                    'nombrePozo' => $consulta[0]->Pozo,
+                    'registros'  => $registros,
+                ];
             }
         }
 
