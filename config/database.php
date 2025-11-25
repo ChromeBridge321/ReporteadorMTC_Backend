@@ -46,13 +46,13 @@ return [
 
     'connections' => [
 
-        'sqlite'          => [
+        'sqlite'           => [
             'driver'   => 'sqlite',
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix'   => '',
         ],
 
-        'mysql'           => [
+        'mysql'            => [
             'driver'    => 'mysql',
             'host'      => env('DB_HOST', 'localhost'),
             'port'      => env('DB_PORT', '3306'),
@@ -66,7 +66,7 @@ return [
             'engine'    => null,
         ],
 
-        'pgsql'           => [
+        'pgsql'            => [
             'driver'   => 'pgsql',
             'host'     => env('DB_HOST', 'localhost'),
             'port'     => env('DB_PORT', '5432'),
@@ -78,7 +78,7 @@ return [
             'schema'   => 'public',
         ],
 
-        'sqlsrv'          => [
+        'sqlsrv'           => [
             'driver'   => 'sqlsrv',
             'host'     => env('DB_HOST', 'localhost'),
             'port'     => env('DB_PORT', '1433'),
@@ -89,7 +89,7 @@ return [
             'prefix'   => '',
         ],
 
-        'bd_MTC_PozaRica' => [
+        'bd_MTC_PozaRica'  => [
             'driver'   => 'sqlsrv',
             'host'     => env('DB1_HOST', 'localhost'),
             'port'     => env('DB1_PORT', '1433'),
@@ -100,7 +100,7 @@ return [
             'prefix'   => '',
         ],
 
-        'DB2'             => [
+        'bd_SDMC_Motocomp' => [
             'driver'   => 'sqlsrv',
             'host'     => env('DB2_HOST', 'localhost'),
             'port'     => env('DB2_PORT', '1433'),
@@ -110,7 +110,7 @@ return [
             'charset'  => 'utf8',
             'prefix'   => '',
         ],
-        'DB3'             => [
+        'bd_MTC_Muspac'    => [
             'driver'   => 'sqlsrv',
             'host'     => env('DB3_HOST', 'localhost'),
             'port'     => env('DB3_PORT', '1433'),
@@ -121,13 +121,24 @@ return [
             'prefix'   => '',
         ],
 
-        'DB4'             => [
+        'bd_MTC_Bellota'   => [
             'driver'   => 'sqlsrv',
             'host'     => env('DB4_HOST', 'localhost'),
             'port'     => env('DB4_PORT', '1433'),
             'database' => env('DB4_DATABASE', ''),
             'username' => env('DB4_USERNAME', ''),
             'password' => env('DB4_PASSWORD', ''),
+            'charset'  => 'utf8',
+            'prefix'   => '',
+        ],
+
+        'bd_MTC_Bellota'   => [
+            'driver'   => 'sqlsrv',
+            'host'     => env('DB5_HOST', 'localhost'),
+            'port'     => env('DB5_PORT', '1433'),
+            'database' => env('DB5_DATABASE', ''),
+            'username' => env('DB5_USERNAME', ''),
+            'password' => env('DB5_PASSWORD', ''),
             'charset'  => 'utf8',
             'prefix'   => '',
         ],

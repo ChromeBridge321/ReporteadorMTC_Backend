@@ -4,10 +4,11 @@ namespace App\Services;
 class DatabaseConnectionService
 {
     private const CONEXIONES_PERMITIDAS = [
-        'bd_MTC_PozaRica' => 'bd_MTC_PozaRica',
-        'DB2'             => 'bd_MTC_PozaRica',
-        'DB3'             => 'bd_MTC_PozaRica',
-        'DB4'             => 'bd_MTC_PozaRica',
+        'bd_MTC_PozaRica'  => 'bd_MTC_PozaRica',
+        'bd_SDMC_Motocomp' => 'bd_SDMC_Motocomp',
+        'bd_MTC_Muspac'    => 'bd_MTC_Muspac',
+        'bd_Bellota'       => 'bd_Bellota',
+        'bd_MTC_CincoP'    => 'bd_MTC_CincoP',
     ]; // nombre amigable => nombre de conexión en config/database.php debe ser igual al nombre de la
        // base de datos definida en el archivo .env a ser posible 
 

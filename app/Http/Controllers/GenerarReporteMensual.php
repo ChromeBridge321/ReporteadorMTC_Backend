@@ -48,6 +48,7 @@ class GenerarReporteMensual extends Controller
                 // Agregar al array en el nuevo formato
                 $ReporteMensual[] = [
                     'nombrePozo' => $consulta[0]->Pozo,
+                    'reporte'    => "Mensual",
                     'registros'  => $registros,
                 ];
             }

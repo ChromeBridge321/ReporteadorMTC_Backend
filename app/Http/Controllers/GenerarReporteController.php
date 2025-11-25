@@ -48,6 +48,7 @@ class GenerarReporteController extends Controller
                 // Agregar al array en el nuevo formato
                 $ReportePozo[] = [
                     'nombrePozo' => $consulta[0]->Pozo,
+                    'reporte'    => "Diario",
                     'registros'  => $registros,
                 ];
             }
