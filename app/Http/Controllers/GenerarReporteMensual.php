@@ -60,6 +60,7 @@ class GenerarReporteMensual extends Controller
     private function construirConsultaMensual(string $dbName, string $mes): string
     {
         return "
+    SET LANGUAGE Spanish;
     DECLARE @Mes VARCHAR(7) = '$mes';
     DECLARE @FechaInicio DATE = DATEFROMPARTS(YEAR(@Mes + '-01'), MONTH(@Mes + '-01'), 1);
     DECLARE @FechaFin DATE = EOMONTH(@FechaInicio);
@@ -77,15 +78,13 @@ class GenerarReporteMensual extends Controller
             CONVERT(DATE, VH.Fecha) AS Fecha,
             AVG(CASE WHEN PT.Nombre = 'PRESION_TP' THEN VH.Valor END) AS PresionTP,
             AVG(CASE WHEN PT.Nombre = 'PRESION_TR' THEN VH.Valor END) AS PresionTR,
-            AVG(CASE WHEN PT.Nombre = 'TAG_LDD' THEN VH.Valor END) AS LDD,
-            AVG(CASE WHEN PT.Nombre = 'TAG_TEMPPozo' THEN VH.Valor END) AS TempPozo,
-            AVG(CASE WHEN PT.Nombre = 'TEMPERATURA_SUCCION' THEN VH.Valor END) AS TempLE,
-            AVG(CASE WHEN PT.Nombre = 'TEMPERATURA_DESCARGA' THEN VH.Valor END) AS TempDesc,
-            AVG(CASE WHEN PT.Nombre = 'PRESION_SUCCION' THEN VH.Valor END) AS PresionSuccion,
-            AVG(CASE WHEN PT.Nombre = 'PRESION_ESTATICA_DESCARGA' THEN VH.Valor END) AS PresionEstDesc,
-            AVG(CASE WHEN PT.Nombre = 'VELOCIDAD' THEN VH.Valor END) AS Velocidad,
-            AVG(CASE WHEN PT.Nombre = 'TAG_TempDescarga' THEN VH.Valor END) AS TempDescarga,
-            AVG(CASE WHEN PT.Nombre = 'TAG_TempSuccion' THEN VH.Valor END) AS TempSuccion
+            AVG(CASE WHEN PT.Nombre = 'PRESION_LE' THEN VH.Valor END) AS LDD,
+            AVG(CASE WHEN PT.Nombre = 'TEMP_LE' THEN VH.Valor END) AS TempPozo,
+		    AVG(CASE WHEN PT.Nombre = 'PRESION_SUCCION' THEN VH.Valor END) AS PresionSuccion,
+		    AVG(CASE WHEN PT.Nombre = 'PRESION_ESTATICA_DESCARGA' THEN VH.Valor END) AS PresionEstDesc,
+		    AVG(CASE WHEN PT.Nombre = 'VELOCIDAD' THEN VH.Valor END) AS Velocidad,
+		    AVG(CASE WHEN PT.Nombre = 'TEMPERATURA_DESCARGA' THEN VH.Valor END) AS TempDesc,
+            AVG(CASE WHEN PT.Nombre = 'TEMPERATURA_SUCCION' THEN VH.Valor END) AS TempSuccion
         FROM [$dbName].[dbo].[t_Historicos.ValoresTags] VH
         INNER JOIN [t_Instalacion.Pozos] IP ON IP.IdPozo = VH.IdPozo
         INNER JOIN [t_Proceso.Tags] PT ON PT.IdTag = VH.IdTag
@@ -103,13 +102,11 @@ class GenerarReporteMensual extends Controller
             ROUND(ISNULL(P.PresionTR, 0), 1) AS [Presion_TR],
             ROUND(ISNULL(P.LDD, 0), 1) AS [LDD],
             ROUND(ISNULL(P.TempPozo, 0), 1) AS [Temperatura_Pozo],
-            ROUND(ISNULL(P.TempLE, 0), 1) AS [Temp_LE],
-            ROUND(ISNULL(P.TempDesc, 0), 1) AS [Temp_Descarga],
             ROUND(ISNULL(P.PresionSuccion, 0), 1) AS [Presion_Succion],
-            ROUND(ISNULL(P.PresionEstDesc, 0), 1) AS [Presion_Estatica_Descarga],
+            ROUND(ISNULL(P.PresionEstDesc, 0), 1) AS [Presion_Descarga],
             ROUND(ISNULL(P.Velocidad, 0), 1) AS [Velocidad],
-            ROUND(ISNULL(P.TempDescarga, 0), 1) AS [Temperatura_Descarga],
-            ROUND(ISNULL(P.TempSuccion, 0), 1) AS [Temperatura_Succion]
+            ROUND(ISNULL(P.TempDesc, 0), 1) AS [Temp_Descarga],
+            ROUND(ISNULL(P.TempSuccion, 0), 1) AS [Temp_Succion]
     FROM Dias D
     LEFT JOIN Promedios P ON D.Fecha = P.Fecha
     ORDER BY D.Fecha
