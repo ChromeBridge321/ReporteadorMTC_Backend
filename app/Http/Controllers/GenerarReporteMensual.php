@@ -94,7 +94,7 @@ class GenerarReporteMensual extends Controller
     )
 
     SELECT
-        ISNULL(P.Pozo, 'Sin Nombre') AS Pozo,
+        ISNULL(P.Pozo, 'Sin Datos') AS Pozo,
         D.Fecha,
         FORMAT(D.Fecha, 'dd/MM/yyyy') AS Fecha_Formato,
         DATENAME(WEEKDAY, D.Fecha) AS Dia_Semana,
