@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\Route;
 | API Routes
 |--------------------------------------------------------------------------
 */
-// Ruta para obtener pozos
+Route::get('/', function () {
+    return 'api works';
+});
 Route::get('api/pozos', 'PozoController@obtenerPozos');
 Route::get('api/pozos/reporte', 'GenerarReporteController@generarReporteConexion');
 Route::get('api/pozos/reporte/mensual', 'GenerarReporteMensual@generarReporteMensual');

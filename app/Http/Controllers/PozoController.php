@@ -21,24 +21,24 @@ class PozoController extends Controller
     }
     public function obtenerPozos(PozosIdRequest $request)
     {
-
         $nombreConexion = $request->input('Conexion');
-
-        // Validar que la conexión esté en la lista blanca
         if (! $nombreConexion || ! $this->dbConnectionService->esConexionValida($nombreConexion)) {
             return response()->json([
                 'error'                  => 'Conexión no válida',
                 'conexiones_disponibles' => $this->dbConnectionService->getConexionesDisponibles(),
             ], 400);
         }
+
         $conexion = $this->dbConnectionService->obtenerConexion($nombreConexion);
-        $sql      = $this->construirConsulta($conexion);
+
         try {
+            $ids   = $this->cargarIdsPozos($conexion);
+            $sql   = $this->construirConsulta($ids);
             $pozos = DB::connection($conexion)->select($sql);
+
             return response()->json($pozos, 200);
 
         } catch (\Exception $e) {
-            // Manejar errores y retornar respuesta de error
             return response()->json([
                 'success' => false,
                 'data'    => [],
@@ -47,28 +47,23 @@ class PozoController extends Controller
         }
     }
 
-    private function construirConsulta($conexion)
+    private function construirConsulta($ids)
     {
-        $ids = [];
-        if ($conexion == "bd_MTC_PozaRica") {
-            $ids = [170, 168, 234, 246, 254, 262, 263];
-        } elseif ($conexion == "DB1") {
-            $ids = [170, 168, 234, 246, 254, 262, 263];
-        } elseif ($conexion == "DB2") {
-            $ids = [170, 168, 234, 246, 254, 262, 263];
-        } elseif ($conexion == "DB3") {
-            $ids = [170, 168, 234, 246, 254, 262, 263];
+        if (empty($ids)) {
+            return "select IdPozo, NombrePozo from [t_Instalacion.Pozos] where 1=0";
         }
 
-        $sql = "select IdPozo, NombrePozo from [t_Instalacion.Pozos] where ";
-        for ($i = 0; $i < count($ids); $i++) {
-            if ($i == count($ids) - 1) {
-                $sql = $sql . " IdPozo = " . $ids[$i] . " ";
-                break;
-            }
-            $sql = $sql . " IdPozo = " . $ids[$i] . " or ";
-        }
-        return $sql;
+        $idsStr = implode(',', $ids);
+        return "select IdPozo, NombrePozo from [t_Instalacion.Pozos] where IdPozo IN ($idsStr)";
+    }
+
+    private function cargarIdsPozos($conexion)
+    {
+        $consulta = DB::connection($conexion)->select("select COUNT(IdPozo) as ID, IdPozo from [t_Historicos.ValoresTags] group by IdPozo");
+        $ids      = array_map(function ($item) {
+            return (int) $item->IdPozo;
+        }, $consulta);
+        return $ids;
     }
 
 }
