@@ -5,10 +5,27 @@ use App\Http\Requests\PozosIdRequest;
 use App\Services\DatabaseConnectionService;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Controlador para generar reportes diarios de pozos
+ *
+ * Este controlador se encarga de generar reportes con promedios horarios
+ * de diferentes parámetros (presión, temperatura, velocidad, etc.) para
+ * los pozos seleccionados en una fecha específica.
+ */
 class GenerarReporteController extends Controller
 {
+    /**
+     * Servicio para manejar conexiones dinámicas a múltiples bases de datos
+     *
+     * @var DatabaseConnectionService
+     */
     private $dbConnectionService;
 
+    /**
+     * Constructor del controlador
+     *
+     * @param DatabaseConnectionService $dbConnectionService Servicio de conexiones de BD
+     */
     public function __construct(DatabaseConnectionService $dbConnectionService)
     {
         $this->dbConnectionService = $dbConnectionService;
@@ -17,8 +34,11 @@ class GenerarReporteController extends Controller
     /**
      * Genera un reporte diario para los pozos seleccionados
      *
-     * @param PozosIdRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * Valida la conexión especificada, procesa los IDs de pozos y la fecha,
+     * y genera un reporte con promedios horarios de todos los parámetros.
+     *
+     * @param PozosIdRequest $request Request validado con: Conexion (string), Pozos (array de IDs), Fecha (date)
+     * @return \Illuminate\Http\JsonResponse Array de objetos con nombrePozo, reporte y registros horarios
      */
     public function generarReporteConexion(PozosIdRequest $request)
     {
@@ -53,12 +73,15 @@ class GenerarReporteController extends Controller
     }
 
     /**
-     * Genera el reporte para cada pozo
+     * Genera el reporte para cada pozo en la lista
      *
-     * @param string $conexion
-     * @param array $pozosIDs
-     * @param string $fecha
-     * @return array
+     * Itera sobre cada ID de pozo, ejecuta la consulta SQL y estructura
+     * los resultados en un formato legible con el nombre del pozo y sus registros.
+     *
+     * @param string $conexion Nombre de la conexión a la base de datos
+     * @param array $pozosIDs Array de IDs de pozos a consultar
+     * @param string $fecha Fecha del reporte en formato Y-m-d
+     * @return array Array estructurado con nombrePozo, tipo de reporte y registros horarios
      */
     private function generarReportePorPozos(string $conexion, array $pozosIDs, string $fecha): array
     {
@@ -85,10 +108,20 @@ class GenerarReporteController extends Controller
     }
 
     /**
-     * Construye la consulta SQL para obtener los datos del reporte
+     * Construye la consulta SQL para obtener promedios horarios de parámetros del pozo
      *
-     * @param string $dbName
-     * @return string
+     * La consulta utiliza CTEs (Common Table Expressions) para:
+     * 1. Generar las 24 horas del día (0-23)
+     * 2. Calcular promedios horarios de parámetros: presión TP/TR, temperatura, velocidad, etc.
+     * 3. Hacer LEFT JOIN para incluir todas las horas aunque no tengan datos
+     *
+     * Los parámetros consultados incluyen:
+     * - Presiones: TP, TR, Succión, Descarga, Estática
+     * - Temperaturas: Pozo, Descarga, Succión
+     * - Operacionales: Velocidad, LDD, Qiny
+     *
+     * @param string $dbName Nombre de la base de datos para construir la ruta completa de las tablas
+     * @return string Query SQL completo con parámetros preparados (?, ?, ?)
      */
     private function construirConsulta(string $dbName): string
     {

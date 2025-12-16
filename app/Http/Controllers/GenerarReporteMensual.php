@@ -6,20 +6,46 @@ use App\Services\DatabaseConnectionService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Controlador para generar reportes mensuales de pozos
+ *
+ * Este controlador genera reportes consolidados con promedios diarios
+ * de diferentes parámetros operacionales para todo un mes.
+ *
+ * IMPORTANTE - COMPATIBILIDAD SQL SERVER 2008:
+ * - No usa prepared statements debido a limitaciones de SQL Server 2008
+ * - Construye consultas con valores embebidos directamente
+ * - Incluye manejo de errores robusto para continuar con otros pozos si uno falla
+ */
 class GenerarReporteMensual extends Controller
 {
+    /**
+     * Servicio para manejar conexiones dinámicas a múltiples bases de datos
+     *
+     * @var DatabaseConnectionService
+     */
     private $dbConnectionService;
 
+    /**
+     * Constructor del controlador
+     *
+     * @param DatabaseConnectionService $dbConnectionService Servicio de conexiones de BD
+     */
     public function __construct(DatabaseConnectionService $dbConnectionService)
     {
         $this->dbConnectionService = $dbConnectionService;
     }
 
     /**
-     * Genera un reporte mensual para los pozos seleccionados
+     * Genera un reporte mensual consolidado para los pozos seleccionados
      *
-     * @param PozosIdRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * Crea un reporte con promedios diarios de todos los parámetros operacionales
+     * durante un mes completo. Incluye todos los días del mes aunque no tengan datos.
+     *
+     * Formato de fecha esperado: 'YYYY-MM' (ejemplo: '2025-12')
+     *
+     * @param PozosIdRequest $request Request validado con: Conexion (string), Pozos (array de IDs), Fecha (mes YYYY-MM)
+     * @return \Illuminate\Http\JsonResponse Array de objetos con nombrePozo, reporte y registros diarios del mes
      */
     public function generarReporteMensual(PozosIdRequest $request)
     {
@@ -54,12 +80,24 @@ class GenerarReporteMensual extends Controller
     }
 
     /**
-     * Genera el reporte mensual para cada pozo con compatibilidad SQL Server 2008
+     * Genera el reporte mensual para cada pozo en la lista
      *
-     * @param string $conexion
-     * @param array $pozosIDs
-     * @param string $mes
-     * @return array
+     * Itera sobre cada ID de pozo, ejecuta la consulta SQL y estructura
+     * los resultados con todos los días del mes especificado.
+     *
+     * MANEJO DE ERRORES:
+     * - Si un pozo falla, registra el error en logs y continúa con los demás
+     * - Permite obtener datos parciales aunque algunos pozos fallen
+     * - Útil para sistemas con múltiples pozos de diferentes estabilidades
+     *
+     * COMPATIBILIDAD SQL SERVER 2008:
+     * - Usa DB::raw() para ejecutar consultas sin prepared statements
+     * - Construye SQL con valores embebidos directamente en la consulta
+     *
+     * @param string $conexion Nombre de la conexión a la base de datos
+     * @param array $pozosIDs Array de IDs de pozos a consultar
+     * @param string $mes Mes del reporte en formato YYYY-MM (ejemplo: '2025-12')
+     * @return array Array estructurado con nombrePozo, tipo de reporte y registros diarios del mes
      */
     private function generarReportePorPozos(string $conexion, array $pozosIDs, string $mes): array
     {
@@ -95,12 +133,29 @@ class GenerarReporteMensual extends Controller
     }
 
     /**
-     * Construye la consulta SQL completa con valores embebidos para reporte mensual
+     * Construye la consulta SQL completa con valores embebidos para el reporte mensual
      *
-     * @param string $dbName
-     * @param int $pozoId
-     * @param string $mes
-     * @return string
+     * ESTRUCTURA DE LA CONSULTA:
+     * 1. SET LANGUAGE Spanish: Configura nombres de días en español
+     * 2. Variables: Calcula fecha inicio y fin del mes
+     * 3. CTE 'Dias': Genera recursivamente todos los días del mes
+     * 4. CTE 'Promedios': Calcula promedios diarios de parámetros por día
+     * 5. SELECT final: LEFT JOIN para incluir días sin datos, con formato de fecha
+     *
+     * PARÁMETROS INCLUIDOS:
+     * - Presiones: TP, TR, Succión, Descarga Estática
+     * - Temperaturas: Pozo, Descarga, Succión
+     * - Operacionales: Velocidad, LDD (Nivel Dinámico), Qiny (Flujo)
+     *
+     * NOTA IMPORTANTE:
+     * - Valores embebidos directamente (no prepared statements)
+     * - Uso de DB::raw() requerido para SQL Server 2008
+     * - MAXRECURSION 0: Permite CTE recursivo sin límite de iteraciones
+     *
+     * @param string $dbName Nombre de la base de datos para construir la ruta completa de las tablas
+     * @param int $pozoId ID del pozo a consultar (valor embebido en la consulta)
+     * @param string $mes Mes en formato YYYY-MM (valor embebido en la consulta)
+     * @return string Query SQL completo con valores embebidos
      */
     private function construirConsultaCompleta(string $dbName, int $pozoId, string $mes): string
     {

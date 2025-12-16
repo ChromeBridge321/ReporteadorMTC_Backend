@@ -5,20 +5,40 @@ use App\Http\Requests\PozosIdRequest;
 use App\Services\DatabaseConnectionService;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Controlador para gestionar operaciones relacionadas con pozos
+ *
+ * Proporciona endpoints para obtener información de pozos disponibles
+ * en las diferentes bases de datos configuradas.
+ */
 class PozoController extends Controller
 {
     /**
-     * Obtiene la lista de pozos desde la base de datos
+     * Servicio para manejar conexiones dinámicas a múltiples bases de datos
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @var DatabaseConnectionService
      */
-
     private $dbConnectionService;
 
+    /**
+     * Constructor del controlador
+     *
+     * @param DatabaseConnectionService $dbConnectionService Servicio de conexiones de BD
+     */
     public function __construct(DatabaseConnectionService $dbConnectionService)
     {
         $this->dbConnectionService = $dbConnectionService;
     }
+
+    /**
+     * Obtiene la lista de pozos activos desde la base de datos especificada
+     *
+     * Filtra solo los pozos que tienen registros históricos en la tabla
+     * t_Historicos.ValoresTags para asegurar que son pozos con datos.
+     *
+     * @param PozosIdRequest $request Request con el parámetro 'Conexion'
+     * @return \Illuminate\Http\JsonResponse Array de objetos con IdPozo y NombrePozo
+     */
     public function obtenerPozos(PozosIdRequest $request)
     {
         $nombreConexion = $request->input('Conexion');
@@ -47,6 +67,15 @@ class PozoController extends Controller
         }
     }
 
+    /**
+     * Construye la consulta SQL para obtener pozos filtrados por IDs
+     *
+     * Si no hay IDs, retorna una consulta que no devuelve resultados (where 1=0).
+     * De lo contrario, construye un IN con los IDs proporcionados.
+     *
+     * @param array $ids Array de IDs de pozos a incluir en la consulta
+     * @return string Query SQL para seleccionar pozos
+     */
     private function construirConsulta($ids)
     {
         if (empty($ids)) {
@@ -57,6 +86,15 @@ class PozoController extends Controller
         return "select IdPozo, NombrePozo from [t_Instalacion.Pozos] where IdPozo IN ($idsStr)";
     }
 
+    /**
+     * Carga los IDs de pozos que tienen datos históricos
+     *
+     * Consulta la tabla de históricos para obtener solo los pozos que
+     * tienen registros de valores, evitando pozos sin datos.
+     *
+     * @param string $conexion Nombre de la conexión a la base de datos
+     * @return array Array de IDs de pozos (como enteros)
+     */
     private function cargarIdsPozos($conexion)
     {
         $consulta = DB::connection($conexion)->select("select COUNT(IdPozo) as ID, IdPozo from [t_Historicos.ValoresTags] group by IdPozo");
